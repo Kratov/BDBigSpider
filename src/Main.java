@@ -85,37 +85,75 @@ public class Main {
 				Model spiderModel = new Model(spiderVertices, texture, indexes);
 				
 				//GL Create texture
-				Texture tex = new Texture("F:\\ProyectoJAVA\\BDBigSpider\\res\\img\\spider_idle_left\\0.png");
+				Texture tex = new Texture(".\\res\\img\\spider_idle_left\\0.png");
 				
 				//Vertex and fragment shader
-				Shader shader = new Shader("F:\\ProyectoJAVA\\BDBigSpider\\shaders\\shader");
+				Shader shader = new Shader(".\\shaders\\shader");
 				
 				Matrix4f scale = new Matrix4f().scale(64);
 				
 				camera.setPosition(new Vector3f(100,0,0));
 		
 				
+				double frame_cap = 1.0/60.0; // 60 frames per 1.0 second
+				
+				double frame_time = 0;
+				int frames = 0;
+				
+				double time = Timer.getTime();
+				
+				double unprocessed = 0;
+				
+				
 				//Window loop receive messages
 				while (!glfwWindowShouldClose(hWindow)) {
-					if(glfwGetKey(hWindow, GLFW_KEY_ESCAPE) == GL_TRUE) {
-						glfwSetWindowShouldClose(hWindow, true);
+					
+					boolean canRender = false;
+					
+					double time_2 = Timer.getTime();
+					
+					double passed = time_2 - time;
+					
+					unprocessed += passed;
+					frame_time += passed;
+					
+					time = time_2;
+					
+					while (unprocessed >= frame_cap) {
+						 unprocessed -= frame_cap;
+						 canRender = true;
+						 
+						 if(glfwGetKey(hWindow, GLFW_KEY_ESCAPE) == GL_TRUE) {
+								glfwSetWindowShouldClose(hWindow, true);
+						 }
+							
+						glfwPollEvents();
+						
+						if (frame_time >= 1.0) {
+							frame_time = 0;
+							System.out.println("FPS: " + frames);
+							frames = 0;
+						}
 					}
 					
-					glfwPollEvents();
-					
-					//Clear context (PIXELS BLACK)
-					glClear(GL_COLOR_BUFFER_BIT);
-					
-					//Shader bind 
-					shader.bind();
-					shader.setUniform("sampler", 0);
-					shader.setUniform("projection", camera.getProjection().mul(scale));
-					tex.bind(0);
-					//Render model
-					spiderModel.render();
+					if (canRender) {
+						//Clear context (PIXELS BLACK)
+						glClear(GL_COLOR_BUFFER_BIT);
+						
+						//Shader bind 
+						shader.bind();
+						shader.setUniform("sampler", 0);
+						shader.setUniform("projection", camera.getProjection().mul(scale));
+						tex.bind(0);
+						//Render model
+						spiderModel.render();
 
-					//Swap draw buffer
-					glfwSwapBuffers(hWindow);
+						//Swap draw buffer
+						glfwSwapBuffers(hWindow);
+						
+						frames++;
+					}
+
 				}
 				
 				//End program
