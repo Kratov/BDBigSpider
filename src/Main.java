@@ -5,7 +5,7 @@
 /**
  * @author Lina Maria Gonzalez Silva,
  * @author Christian Felipe Rodriguez Valencia,
- * @author Jaime Enrique Zamora Munar
+ * @author Jaime Enrique Zamora Munar (Kratov)
  */
 
 import static org.lwjgl.glfw.GLFW.*; //Import GLFW
@@ -17,67 +17,69 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 
+/**
+ * 
+ * @author Kratov
+ * Clase principal (Punto de entrada app)
+ */
 public class Main {
 	
+	
 	//Public constants
+	/**
+	 * Constantes de app
+	 * Tamaño de ventana y titulo de ventana
+	 */
 	public static final int WND_HEIGHT = 480;
 	public static final int WND_WIDTH = 640;
 	public static final String WND_TITLE = "BIG Spider";
 	
+	/**
+	 * Metodo de entrada MAIN
+	 */
 	public Main() {
-		// Inits GLFW
-				if (!glfwInit())  
+				
+				if (!glfwInit())   // Inicializa  librerias GLFW
 					throw new IllegalStateException("Failed to initialize GLFW"); 
 				
-				//Window Options Switch
-				glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); 
+				glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);  // Visibilidad de ventana falso
 				
-				// Create window
-				long hWindow = glfwCreateWindow(WND_WIDTH, WND_HEIGHT, WND_TITLE, 0, 0);
+				long hWindow = glfwCreateWindow(WND_WIDTH, WND_HEIGHT, WND_TITLE, 0, 0); // Crea ventana retorna manejador
 				if (hWindow == 0) 
 					throw new IllegalStateException("Failed to create window");
 				
-				// Retrive window specs
-				GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+				GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor()); // Retorna atributos del monitor
 				
-				//Center window
-				glfwSetWindowPos(hWindow, (videoMode.width() - WND_WIDTH) / 2, (videoMode.height() - WND_HEIGHT) / 2);
+				glfwSetWindowPos(hWindow, (videoMode.width() - WND_WIDTH) / 2, (videoMode.height() - WND_HEIGHT) / 2); //Centra la ventana
 				
-				//Show window
-				glfwShowWindow(hWindow);
+				glfwShowWindow(hWindow); // Muestra la ventana
 				
-				//Create context
-				glfwMakeContextCurrent(hWindow);
-				GL.createCapabilities();
+				glfwMakeContextCurrent(hWindow); // Crea contexto https://www.khronos.org/opengl/wiki/OpenGL_Context
+				GL.createCapabilities(); // Inits OPENGL
 				
-				Camera camera = new Camera(WND_WIDTH, WND_HEIGHT);
+				Camera camera = new Camera(WND_WIDTH, WND_HEIGHT); // Camara proyecta el mundo se mueve al rededor de la camara https://www.youtube.com/watch?v=zHlxQoJYUhw
 				
-				//Enable textures
-				glEnable(GL_TEXTURE_2D);
+				glEnable(GL_TEXTURE_2D); // Activa las texturas en 2D
 				
-				//Vertices spider
-				float[] spiderVertices = new float[] {
+				float[] spiderVertices = new float[] { 	//Vertices de la araña https://open.gl/drawing
 						-0.5f,0.5f,0, //TOP LEFT   0
 						0.5f,0.5f,0,  //TOP RIGHT   1
 						0.5f,-0.5f,0,  //BOTTOM RIGHT	2
-						
 						-0.5f, -0.5f,0, //BOTTOMLEFT  3
 						
 				};
-				
-				//Coords texture spider
-				float[] texture = new float[] {
-						0,0,
-						1,0,
-						1,1,
 					
-						0,1,
+				float[] texture = new float[] { //Coordenadas de la textura https://learnopengl.com/Getting-started/Textures
+						0,0, //Lower left of image
+						1,0, //Lower Right
+						1,1, //Upper right
+						0,1, //Upper left 
 				
 				};
 				
 				//Indexes for join vertex
-				int[] indexes = new int[] {
-						0,1,2,
+				int[] indexes = new int[] {  //Union de los vertices  http://openglbook.com/chapter-3-index-buffer-objects-and-primitive-types.html
+						0,1,2,  // 
 						2,3,0	
 				};
 				
@@ -92,7 +94,7 @@ public class Main {
 				
 				Matrix4f scale = new Matrix4f().scale(64);
 				
-				camera.setPosition(new Vector3f(100,0,0));
+				camera.setPosition(new Vector3f(0,0,0));
 		
 				
 				double frame_cap = 1.0/60.0; // 60 frames per 1.0 second
