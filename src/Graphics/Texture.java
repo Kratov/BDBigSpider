@@ -1,3 +1,4 @@
+package Graphics;
 import java.awt.image.BufferedImage;
 import static org.lwjgl.opengl.GL13.*;
 import java.io.File;

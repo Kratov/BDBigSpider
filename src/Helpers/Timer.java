@@ -1,3 +1,4 @@
+package Helpers;
 
 public class Timer {
 	public static double getTime() {
