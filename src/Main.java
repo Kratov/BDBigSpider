@@ -9,11 +9,9 @@
  */
 
 import static org.lwjgl.glfw.GLFW.*; //Import GLFW
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glEnable;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import Game.Game;
@@ -36,7 +34,6 @@ public class Main {
 	public static final int WND_HEIGHT = 480;
 	public static final int WND_WIDTH = 640;
 	public static final String WND_TITLE = "BIG Spider";
-	public static final double FRAMES_PER_SECOND = 1.0f/60.0f;
 	
 	/**
 	 * Metodo de entrada MAIN
@@ -45,9 +42,11 @@ public class Main {
 	public Main() {
 		if (!glfwInit())   // Inicializa  librerias GLFW
 			throw new IllegalStateException("Failed to initialize GLFW"); 
-		
 		Window wnd = new Window(WND_WIDTH, WND_HEIGHT, WND_TITLE);
+		wnd.createWindow();
 		wnd.show();				
+		GL.createCapabilities(); // Inits OPENGL
+		glEnable(GL_TEXTURE_2D); // Activa las texturas en 2D
 		Game game = new Game(wnd);
 		while (!glfwWindowShouldClose(wnd.getHandler())) {  // Ciclo de mensajes de Windows https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
 			game.go();
