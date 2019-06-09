@@ -9,18 +9,29 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.*;
 
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+
+import Game.Input;
 public class Window {
 	private int height, width;
 	private long handler;
 	private String title;
 	private boolean isFullScreen;
+	private Input input;
+	
 	public Window(int width, int height, String title) {
 		this.height = height;
 		this.width = width;
 		this.title = title;
 		setFullScreen(false);
+	}
+	
+	public static void setCallbacks() {
+		glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
 	}
 	
 	public void createWindow() {
@@ -33,8 +44,13 @@ public class Window {
 			glfwSetWindowPos(handler, (videoMode.width() - this.width) / 2, (videoMode.height() - this.height) / 2); //Centra la ventana
 		}
 		glfwMakeContextCurrent(handler); // Asigna Contexto de ventana como principal en Hilo https://www.khronos.org/opengl/wiki/OpenGL_Context
+		
+		input = new Input(handler);
 	}
-	
+	public void update() {
+		input.update();
+		glfwPollEvents();
+	}
 	public void setSize(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -57,5 +73,8 @@ public class Window {
 	}
 	public void setFullScreen(boolean isFullScreen) {
 		this.isFullScreen = isFullScreen;
+	}
+	public Input getInput() {
+		return input;
 	}
 }

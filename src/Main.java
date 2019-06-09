@@ -40,8 +40,9 @@ public class Main {
 	 */
 	
 	public Main() {
+		Window.setCallbacks();
 		if (!glfwInit())   // Inicializa  librerias GLFW
-			throw new IllegalStateException("Failed to initialize GLFW"); 
+			throw new IllegalStateException("Failed to initialize GLFW");
 		Window wnd = new Window(WND_WIDTH, WND_HEIGHT, WND_TITLE);
 		wnd.createWindow();
 		wnd.show();				
