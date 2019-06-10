@@ -21,8 +21,7 @@ public class Texture {
 			
 			//Store pixels 
 			 int[] pixelsRaw = bi.getRGB(0, 0, width, height, null, 0, width);
-			
-			//Create pixels buffer R G B A per pixel
+			 
 			ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*4);
 			
 			//Read pixels RGBA
@@ -56,10 +55,15 @@ public class Texture {
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	protected void finalize() throws Throwable {
+		glDeleteTextures(id);
+		super.finalize();
+	}
 
 	public void bind(int sampler) {
 		//Bind texture
-		if (sampler >= 0 && sampler <=31) {
+		if (sampler >= 0 && sampler <= 31) {
 			glActiveTexture(GL_TEXTURE0 + sampler);
 			glBindTexture(GL_TEXTURE_2D, id);
 		}

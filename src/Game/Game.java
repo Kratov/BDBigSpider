@@ -7,13 +7,16 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
+
 import Graphics.Graphics;
 import Graphics.Texture;
 import Graphics.Window;
 import Models.Spider;
+import World.Tile;
 import World.TileRenderer;
+import World.World;
 
 public class Game {
 
@@ -24,23 +27,26 @@ public class Game {
 	private Spider spider;
 	private Window wnd;
 	private Texture texture;
+	private TileRenderer tiles;
+	private World world;
 
 	private double deltaTime = 0.0f; // Tiempo entre frames
 	private double lastTime = glfwGetTime(); // Tiempo antes de frame
 	private long timer = System.currentTimeMillis();
 	private int frames = 0; // Frames trascurridos1
-	private Matrix4f scale = new Matrix4f().scale(16);
 
 	public Game(Window wnd) {
 		this.wnd = wnd;
 		this.camera = new Camera(wnd.getWidth(), wnd.getHeight()); // Camara proyecta el mundo se mueve al rededor de la
-																	// camara
-																	// https://www.youtube.com/watch?v=zHlxQoJYUhw
+																	// camara https://www.youtube.com/watch?v=zHlxQoJYUhw
+		world = new World();
+		world.setTile(Tile.test2, 0, 0);
 		camera.setPosition(new Vector3f(0, 0, 0)); // Posiciona la camara
+		world.setTile(Tile.test2, 63, 63);
 		this.spider = new Spider(); // Modelo de araña
 		this.graphics = new Graphics();
-		texture = new Texture(".\\res\\img\\spider_idle_left\\0.png"); // Crea textura de la araña
-		TileRenderer tiles = new TileRenderer();
+		//texture = new Texture(".\\res\\img\\spider_idle_left\\0.png"); // Crea textura de la araña
+		tiles = new TileRenderer();
 	}
 
 	public void go() {
@@ -65,19 +71,30 @@ public class Game {
 		glfwPollEvents();
 		if (wnd.getInput().isKeyReleased(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(this.wnd.getHandler(), true);
+		if(wnd.getInput().isKeyDown(GLFW.GLFW_KEY_D)) {
+			camera.getPosition().sub(new Vector3f(-5,0,0));
+		}
+		if(wnd.getInput().isKeyDown(GLFW.GLFW_KEY_A)) {
+			camera.getPosition().sub(new Vector3f(5,0,0));
+		}
+		if(wnd.getInput().isKeyDown(GLFW.GLFW_KEY_S)) {
+			camera.getPosition().sub(new Vector3f(0,5,0));
+		}
+		if(wnd.getInput().isKeyDown(GLFW.GLFW_KEY_W)) {
+			camera.getPosition().sub(new Vector3f(0,-5,0));
+		}
+		world.correctCamera(camera, wnd);
 		wnd.update();
 		--deltaTime;
 	}
+	
+	
 
 	private void renderGame() {
 		glClear(GL_COLOR_BUFFER_BIT);
-		// Shader bind
-//		this.graphics.getShader().bind();
-//		this.graphics.getShader().setUniform("sampler", 0);
-		this.graphics.getShader().setUniform("projection", camera.getProjection().mul(scale));
-		// texture.bind(0);
 		// CreateCapabilitiesRender model
-		spider.draw();
+		world.render(tiles, graphics.getShader(), camera, wnd);
+		//spider.draw();
 		wnd.swapBuffers();
 	}
 }

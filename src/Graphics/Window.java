@@ -11,8 +11,6 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.*;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 
 import Game.Input;
@@ -31,9 +29,8 @@ public class Window {
 	}
 	
 	public static void setCallbacks() {
-		glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
+	//	glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.err));
 	}
-	
 	public void createWindow() {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);  // Visibilidad de ventana falso
 		handler = glfwCreateWindow(this.width, this.height, this.title, isFullScreen ? glfwGetPrimaryMonitor() : 0, 0); // Crea ventana retorna manejador

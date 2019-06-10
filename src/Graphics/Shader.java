@@ -62,6 +62,16 @@ public class Shader {
 		}
 	}
 	
+	@Override
+	protected void finalize() throws Throwable {
+		glDetachShader(program, vs);
+		glDetachShader(program, fs);
+		glDeleteShader(vs);
+		glDeleteShader(fs);
+		glDeleteProgram(program);
+		super.finalize();
+	}
+	
 	public void setUniform(String name, int value) {
 		int location = glGetUniformLocation(program, name);
 		if (location != -1) {
