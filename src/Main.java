@@ -12,6 +12,13 @@ import static org.lwjgl.glfw.GLFW.*; //Import GLFW
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glEnable;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import static org.lwjgl.opengl.GL11.*;
+
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import org.joml.Vector2f;
@@ -21,6 +28,7 @@ import Collision.AABB;
 import Entity.Entity;
 import Game.Game;
 import Graphics.Window;
+import Swing.FrInsertarUsuario;
 
 
 /**
@@ -45,21 +53,34 @@ public class Main {
 	 */
 	
 	public Main() {
-		Window.setCallbacks();
 		
-		if (!glfwInit())   // Inicializa  librerias GLFW
-			throw new IllegalStateException("Failed to initialize GLFW");
-		Window wnd = new Window(WND_WIDTH, WND_HEIGHT, WND_TITLE);
-		wnd.createWindow();
-		wnd.show();				
-		GL.createCapabilities(); // Inits OPENGL
-		glEnable(GL_TEXTURE_2D); // Activa las texturas en 2D
-		Game game = new Game(wnd);
-		while (!glfwWindowShouldClose(wnd.getHandler())) {  // Ciclo de mensajes de Windows https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
-			game.go();
-		}
-		Entity.deleteAsset();
-		glfwTerminate(); //Cierra GLFW
+		FrInsertarUsuario frInsertarUsuario = new FrInsertarUsuario("Big Spider -  Registrar jugadores");
+		frInsertarUsuario.getBtnIniciar().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Window.setCallbacks();
+				
+				if (!glfwInit())   // Inicializa  librerias GLFW
+					throw new IllegalStateException("Failed to initialize GLFW");
+				Window wnd = new Window(WND_WIDTH, WND_HEIGHT, WND_TITLE);
+				wnd.createWindow();
+				wnd.show();				
+				GL.createCapabilities(); // Inits OPENGL
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				
+				glEnable(GL_TEXTURE_2D); // Activa las texturas en 2D
+				Game game = new Game(wnd);
+				while (!glfwWindowShouldClose(wnd.getHandler())) {  // Ciclo de mensajes de Windows https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
+					game.go();
+				}
+				
+				Entity.deleteAsset();
+				glfwTerminate(); //Cierra GLFW
+			}
+		});;
+		frInsertarUsuario.setVisible(true);
 	}
 	
 	public static void main(String[] args) {

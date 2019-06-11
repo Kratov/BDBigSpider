@@ -32,7 +32,7 @@ public class Animation {
 		this.currentTime = Timer.getTime();
 		this.elapsedTime += currentTime - lastTime;
 		if (elapsedTime >= fps) {
-			elapsedTime -= fps;
+			elapsedTime = 0;
 			pointer ++;
 		}
 		if (pointer >= frames.length) {

@@ -7,7 +7,7 @@ public class Tile {
 	public static byte not = 0; // number of tiles
 	public static Tile tiles[] = new Tile[16];
 	public static final Tile test_tile = new Tile(".\\res\\texture\\worldbackground");
-	public static final Tile test2 = new Tile(".\\res\\texture\\checker").setSolid();
+	public static final Tile test2 = new Tile(".\\res\\texture\\wall").setSolid();
 	public Tile(String texture) {
 		this.id = not;
 		not++;

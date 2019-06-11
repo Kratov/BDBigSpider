@@ -41,9 +41,8 @@ public class Game {
 		this.wnd = wnd;
 		this.camera = new Camera(wnd.getWidth(), wnd.getHeight()); // Camara proyecta el mundo se mueve al rededor de la
 		Entity.initAsset();															// camara https://www.youtube.com/watch?v=zHlxQoJYUhw
-		world = new World("tiles");
+		world = new World("levels",camera);
 		camera.setPosition(new Vector3f(0, 0, 0)); // Posiciona la camara
-		this.player = new Player(new Transform());
 		this.graphics = new Graphics();
 		//texture = new Texture(".\\res\\img\\spider_idle_left\\0.png"); // Crea textura de la araña
 		tiles = new TileRenderer();
@@ -71,8 +70,7 @@ public class Game {
 		glfwPollEvents();
 		if (wnd.getInput().isKeyReleased(GLFW_KEY_ESCAPE))
 			glfwSetWindowShouldClose(this.wnd.getHandler(), true);
-		
-		player.update((float)FRAMES_PER_SECOND, wnd, camera, world);
+		world.update((float)FRAMES_PER_SECOND, wnd, camera);
 		world.correctCamera(camera, wnd);
 		wnd.update();
 		--deltaTime;
@@ -84,8 +82,6 @@ public class Game {
 		glClear(GL_COLOR_BUFFER_BIT);
 		// CreateCapabilitiesRender model
 		world.render(tiles, graphics.getShader(), camera, wnd);
-		player.render(graphics.getShader(), camera, world);
-		//spider.draw();
 		wnd.swapBuffers();
 	}
 }
