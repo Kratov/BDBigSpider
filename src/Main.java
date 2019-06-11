@@ -12,8 +12,13 @@ import static org.lwjgl.glfw.GLFW.*; //Import GLFW
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glEnable;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
+import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 
+import Collision.AABB;
+import Entity.Entity;
 import Game.Game;
 import Graphics.Window;
 
@@ -41,6 +46,7 @@ public class Main {
 	
 	public Main() {
 		Window.setCallbacks();
+		
 		if (!glfwInit())   // Inicializa  librerias GLFW
 			throw new IllegalStateException("Failed to initialize GLFW");
 		Window wnd = new Window(WND_WIDTH, WND_HEIGHT, WND_TITLE);
@@ -52,6 +58,7 @@ public class Main {
 		while (!glfwWindowShouldClose(wnd.getHandler())) {  // Ciclo de mensajes de Windows https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
 			game.go();
 		}
+		Entity.deleteAsset();
 		glfwTerminate(); //Cierra GLFW
 	}
 	
