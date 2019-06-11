@@ -217,5 +217,6 @@
 	<classpathentry kind="lib" path="lib/steamworks4j-server-1.8.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/steamworks4j-server-1.8.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/steamworks4j-server-1.8.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Ora"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,5 +1,7 @@
 package World;
 
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +15,11 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import Collision.AABB;
+import Collision.ITouchable;
 import Game.Camera;
 import Graphics.Shader;
 import Graphics.Window;
+import Entity.Door;
 import Entity.Entity;
 import Entity.Player;
 import Entity.Transform;
@@ -27,6 +31,8 @@ public class World {
 	private int width;
 	private int height;
 	private int scale;
+	private Player player;
+	private Door door;
 	private List<Entity> entities;
 	
 	private Matrix4f world;
@@ -69,9 +75,13 @@ public class World {
 						transform.pos.y = -y*2;
 						switch (entity_index) {
 						case 1:
-							Player player = new Player(transform);
+							player = new Player(transform);
 							entities.add(player);
 							camera.getPosition().set(transform.pos.mul(-scale, new Vector3f()));
+							break;
+						case 2:
+							door = new Door(transform);
+							entities.add(door);
 							break;
 						default:
 							break;
@@ -127,11 +137,16 @@ public class World {
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).collideWithTiles(this);
 			for (int j = i + 1; j < entities.size(); j++) {
-				entities.get(i).collideWithEntity(entities.get(j));
+				entities.get(i).collideWithEntity(entities.get(j), new ITouchable() {
+					@Override
+					public boolean touching() {
+						glfwSetWindowShouldClose(wnd.getHandler(), true);
+						return true;
+					}
+				});
 			}
 			entities.get(i).collideWithTiles(this);
 		}
-		
 	}
 	
 	public void setTile(Tile tile, int x, int y){
@@ -142,6 +157,7 @@ public class World {
 			bounding_boxes[x + y * width] = null;
 		}
 	}	
+	
 	public void correctCamera(Camera camera, Window wnd) {
 		Vector3f pos = camera.getPosition();
 		
@@ -168,6 +184,7 @@ public class World {
 			return null;
 		}
 	}
+	
 	public Tile getTile(int x, int y) {
 		try {
 			return Tile.tiles[tiles[x + y * width]];

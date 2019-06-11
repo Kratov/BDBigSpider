@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -25,9 +26,11 @@ import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 
 import Collision.AABB;
+import Databse.OracleConn;
 import Entity.Entity;
 import Game.Game;
 import Graphics.Window;
+import Helpers.Timer;
 import Swing.FrInsertarUsuario;
 
 
@@ -54,13 +57,23 @@ public class Main {
 	
 	public Main() {
 		
+		OracleConn.connectOracle();
+		
+		try {
+			if (OracleConn.connection.isClosed()) {
+				throw new SQLException("Not connected");
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 		FrInsertarUsuario frInsertarUsuario = new FrInsertarUsuario("Big Spider -  Registrar jugadores");
 		frInsertarUsuario.getBtnIniciar().addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				double beginTime = Timer.getTime();
 				Window.setCallbacks();
-				
 				if (!glfwInit())   // Inicializa  librerias GLFW
 					throw new IllegalStateException("Failed to initialize GLFW");
 				Window wnd = new Window(WND_WIDTH, WND_HEIGHT, WND_TITLE);
@@ -75,7 +88,10 @@ public class Main {
 				while (!glfwWindowShouldClose(wnd.getHandler())) {  // Ciclo de mensajes de Windows https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows
 					game.go();
 				}
-				
+				double endTime = Timer.getTime();
+				frInsertarUsuario.setElapsedGameSeconds(endTime - beginTime);
+				frInsertarUsuario.getLabTiempoJuego().setText(frInsertarUsuario.getElapsedGameSeconds()+" s");
+				OracleConn.CloseConnection();
 				Entity.deleteAsset();
 				glfwTerminate(); //Cierra GLFW
 			}
